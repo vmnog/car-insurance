@@ -1,0 +1,451 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { SelectWithSearchAndButton } from "@/components/select-with-search-and-button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { CurrencyTextInput } from "@/components/currency-text-input";
+import { useEffect, useRef } from "react";
+
+const completeRequiredFormSchema = z.object({
+	is_active: z.literal(true),
+	full_amount: z.string(),
+	down_payment: z.string(),
+	installments: z.string(),
+});
+const completeOptionalFormSchema = z.object({
+	is_active: z.literal(false).optional(),
+	full_amount: z.string().optional(),
+	down_payment: z.string().optional(),
+	installments: z.string().optional(),
+});
+
+const thirdPartyRequiredFormSchema = z.object({
+	is_active: z.literal(true),
+	full_amount: z.string(),
+	down_payment: z.string(),
+	installments: z.string(),
+});
+const thirdPartyOptionalFormSchema = z.object({
+	is_active: z.literal(false).optional(),
+	full_amount: z.string().optional(),
+	down_payment: z.string().optional(),
+	installments: z.string().optional(),
+});
+
+const FormSchema = z.object({
+	fullname: z.string().min(2, {
+		message: "Fullname must be at least 2 characters.",
+	}),
+	quote: z.string().min(2, {
+		message: "Quote must be at least 2 characters.",
+	}),
+	company: z.string().min(2, {
+		message: "Company must be at least 2 characters.",
+	}),
+	installments: z.string().min(1, {
+		message: "Installments must be at least 1 character.",
+	}),
+	language: z.string().min(2, {
+		message: "Language must be at least 2 characters.",
+	}),
+	complete: z.discriminatedUnion("is_active", [
+		completeRequiredFormSchema,
+		completeOptionalFormSchema,
+	]),
+	third_party_coverage: z.discriminatedUnion("is_active", [
+		thirdPartyRequiredFormSchema,
+		thirdPartyOptionalFormSchema,
+	]),
+	fee_amount: z.string(),
+	has_renters: z.boolean(),
+	is_car_financed: z.boolean(),
+	franchise_amount: z.string(),
+	medical_insurance_amount: z.string(),
+	property_damage_insurance_amount: z.string(),
+	is_rental_car: z.boolean(),
+	term_duration_in_months: z.string(),
+});
+
+export function CreateQuoteForm() {
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+	});
+
+	function onSubmit(data: z.infer<typeof FormSchema>) {
+		toast.success("You submitted the following values:", {
+			description: (
+				<pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+					<code className="text-white">{JSON.stringify(data, null, 2)}</code>
+				</pre>
+			),
+		});
+	}
+
+	const companyFieldRef = useRef<HTMLButtonElement>(null);
+	const installmentsFieldRef = useRef<HTMLButtonElement>(null);
+	const languageFieldRef = useRef<HTMLButtonElement>(null);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const errors = form.formState.errors;
+		if (Object.keys(errors).length > 0) {
+			if (errors.company) {
+				companyFieldRef.current?.focus();
+			} else if (errors.installments) {
+				installmentsFieldRef.current?.focus();
+			} else if (errors.language) {
+				languageFieldRef.current?.focus();
+			}
+		}
+	}, [form.formState.errors, form.formState.submitCount]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		form.clearErrors("complete");
+	}, [form.watch("complete.is_active")]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		form.clearErrors("third_party_coverage");
+	}, [form.watch("third_party_coverage.is_active")]);
+
+	return (
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+				<Card>
+					<CardHeader>
+						<CardTitle>Quote Details</CardTitle>
+						<CardDescription>
+							Please fill in the following fields to create a new quote.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-8">
+						<div className="grid grid-cols-2 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="fullname"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Fullname</FormLabel>
+										<FormControl>
+											<Input placeholder="John Doe" {...field} />
+										</FormControl>
+										<FormDescription>
+											Enter the full name of the person who is requesting the
+											quote.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="quote"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Quote</FormLabel>
+										<FormControl>
+											<Input placeholder="e.g. Auto Insurance" {...field} />
+										</FormControl>
+										<FormDescription>Enter the quote number.</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<div className="grid grid-cols-3 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="company"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={companyFieldRef}
+											label="Company"
+											subjectName="company"
+											options={[
+												{ value: "id-1", label: "Bristol West" },
+												{ value: "id-2", label: "National General" },
+												{ value: "id-3", label: "Progressive" },
+												{ value: "id-4", label: "State Farm" },
+												{ value: "id-5", label: "Travelers" },
+												{ value: "id-6", label: "USAA" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the insurance company.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="installments"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={installmentsFieldRef}
+											label="Installments"
+											subjectName="installments"
+											options={[
+												{ value: "6", label: "6" },
+												{ value: "12", label: "12" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the number of installments.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="language"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={languageFieldRef}
+											label="Language"
+											subjectName="language"
+											options={[
+												{
+													value: "id-1",
+													label: "English",
+													flagCountryCode: "US",
+												},
+												{
+													value: "id-2",
+													label: "Spanish",
+													flagCountryCode: "ES",
+												},
+												{
+													value: "id-3",
+													label: "Portuguese",
+													flagCountryCode: "BR",
+												},
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the language for the quote.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<FormField
+							control={form.control}
+							name="complete.is_active"
+							render={({ field }) => (
+								<FormItem className="flex items-center justify-between rounded-lg">
+									<div className="space-y-0.5">
+										<FormLabel>Complete Coverage</FormLabel>
+										<FormDescription>
+											Select if you want to include complete coverage in the
+											quote.
+										</FormDescription>
+									</div>
+									<FormControl>
+										<Switch
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+						<div className="grid grid-cols-3 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="complete.full_amount"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Complete full amount</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("complete.is_active")}
+												prefix="$"
+												id="complete_full_amount"
+												name="complete.full_amount"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="complete.down_payment"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Complete down payment</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("complete.is_active")}
+												prefix="$"
+												id="complete_down_payment"
+												name="complete.down_payment"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="complete.installments"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Complete installments</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("complete.is_active")}
+												prefix="$"
+												id="complete_installments"
+												name="complete.installments"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<FormField
+							control={form.control}
+							name="third_party_coverage.is_active"
+							render={({ field }) => (
+								<FormItem className="flex items-center justify-between rounded-lg">
+									<div className="space-y-0.5">
+										<FormLabel>Third Party Coverage</FormLabel>
+										<FormDescription>
+											Select if you want to include third party coverage in the
+											quote.
+										</FormDescription>
+									</div>
+									<FormControl>
+										<Switch
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+						<div className="grid grid-cols-3 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="third_party_coverage.full_amount"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Third party full amount</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("third_party_coverage.is_active")}
+												prefix="$"
+												id="third_party_full_amount"
+												name="third_party_coverage.full_amount"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="third_party_coverage.down_payment"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Third party down payment</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("third_party_coverage.is_active")}
+												prefix="$"
+												id="third_party_down_payment"
+												name="third_party_coverage.down_payment"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="third_party_coverage.installments"
+								render={({ field }) => (
+									<FormItem className="disabled:opacity-50">
+										<FormLabel>Third party installments</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												disabled={!form.watch("third_party_coverage.is_active")}
+												prefix="$"
+												id="third_party_installments"
+												name="third_party_coverage.installments"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+					</CardContent>
+				</Card>
+				<Button type="submit">Submit</Button>
+			</form>
+		</Form>
+	);
+}
