@@ -121,6 +121,10 @@ export function CreateQuoteForm() {
 	const thirdPartyDownPaymentFieldRef = useRef<HTMLInputElement>(null);
 	const thirdPartyInstallmentsFieldRef = useRef<HTMLInputElement>(null);
 	const feeAmountFieldRef = useRef<HTMLInputElement>(null);
+	const franchiseAmountFieldRef = useRef<HTMLButtonElement>(null);
+	const medicalInsuranceAmountFieldRef = useRef<HTMLButtonElement>(null);
+	const propertyDamageInsuranceAmountFieldRef = useRef<HTMLButtonElement>(null);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const errors = form.formState.errors;
@@ -145,6 +149,12 @@ export function CreateQuoteForm() {
 				thirdPartyInstallmentsFieldRef.current?.focus();
 			} else if (errors?.fee_amount) {
 				feeAmountFieldRef.current?.focus();
+			} else if (errors?.franchise_amount) {
+				franchiseAmountFieldRef.current?.focus();
+			} else if (errors?.medical_insurance_amount) {
+				medicalInsuranceAmountFieldRef.current?.focus();
+			} else if (errors?.property_damage_insurance_amount) {
+				propertyDamageInsuranceAmountFieldRef.current?.focus();
 			}
 		}
 	}, [form.formState.errors, form.formState.submitCount]);
@@ -499,51 +509,52 @@ export function CreateQuoteForm() {
 
 						<Separator />
 
-						<FormField
-							control={form.control}
-							name="has_renters"
-							render={({ field }) => (
-								<FormItem className="flex items-center justify-between rounded-lg">
-									<div className="space-y-0.5">
-										<FormLabel>Has renters?</FormLabel>
-										<FormDescription>
-											Select if the property has renters.
-										</FormDescription>
-										<FormMessage />
-									</div>
-									<FormControl>
-										<Switch
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+						<div className="flex items-center justify-between gap-4">
+							<FormField
+								control={form.control}
+								name="has_renters"
+								render={({ field }) => (
+									<FormItem className="flex items-center justify-between rounded-lg">
+										<div className="space-y-0.5">
+											<FormLabel>Has renters?</FormLabel>
+											<FormDescription>
+												Select if the property has renters.
+											</FormDescription>
+											<FormMessage />
+										</div>
+										<FormControl>
+											<Switch
+												checked={field.value}
+												onCheckedChange={field.onChange}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
 
-						<Separator />
+							<FormField
+								control={form.control}
+								name="is_car_financed"
+								render={({ field }) => (
+									<FormItem className="flex items-center justify-between rounded-lg">
+										<div className="space-y-0.5">
+											<FormLabel>Is car financed?</FormLabel>
+											<FormDescription>
+												Select if the car is financed.
+											</FormDescription>
+											<FormMessage />
+										</div>
+										<FormControl>
+											<Switch
+												checked={field.value}
+												onCheckedChange={field.onChange}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
 
-						<FormField
-							control={form.control}
-							name="is_car_financed"
-							render={({ field }) => (
-								<FormItem className="flex items-center justify-between rounded-lg">
-									<div className="space-y-0.5">
-										<FormLabel>Is car financed?</FormLabel>
-										<FormDescription>
-											Select if the car is financed.
-										</FormDescription>
-										<FormMessage />
-									</div>
-									<FormControl>
-										<Switch
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
 						<Separator />
 
 						<div className="grid grid-cols-2 gap-4 items-start">
@@ -552,7 +563,7 @@ export function CreateQuoteForm() {
 								name="fee_amount"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Fee amount</FormLabel>
+										<FormLabel>Fee</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												prefix="$"
@@ -564,6 +575,81 @@ export function CreateQuoteForm() {
 												ref={feeAmountFieldRef}
 											/>
 										</FormControl>
+										<FormDescription>Enter the fee amount.</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<div className="grid grid-cols-3 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="franchise_amount"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={franchiseAmountFieldRef}
+											label="Franchise"
+											subjectName="franchise"
+											options={[
+												{ value: "id-1", label: "$ 2.500" },
+												{ value: "id-2", label: "$ 5.000" },
+												{ value: "id-3", label: "$ 10.000" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the franchise amount.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="medical_insurance_amount"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={medicalInsuranceAmountFieldRef}
+											label="Medical insurance"
+											subjectName="medical insurance"
+											options={[
+												{ value: "id-1", label: "$ 2.500" },
+												{ value: "id-2", label: "$ 5.000" },
+												{ value: "id-3", label: "$ 10.000" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the medical insurance amount.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="property_damage_insurance_amount"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											ref={propertyDamageInsuranceAmountFieldRef}
+											label="Property damage"
+											subjectName="property damage"
+											options={[
+												{ value: "id-1", label: "$ 2.500" },
+												{ value: "id-2", label: "$ 5.000" },
+												{ value: "id-3", label: "$ 10.000" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the property damage amount.
+										</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}
