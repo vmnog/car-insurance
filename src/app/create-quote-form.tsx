@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -29,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { CurrencyTextInput } from "@/components/currency-text-input";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const completeRequiredFormSchema = z.object({
 	is_active: z.literal(true),
@@ -81,8 +81,8 @@ const FormSchema = z.object({
 		thirdPartyOptionalFormSchema,
 	]),
 	fee_amount: z.string(),
-	has_renters: z.boolean(),
-	is_car_financed: z.boolean(),
+	has_renters: z.boolean().default(false),
+	is_car_financed: z.boolean().default(false),
 	franchise_amount: z.string(),
 	medical_insurance_amount: z.string(),
 	property_damage_insurance_amount: z.string(),
@@ -105,6 +105,12 @@ export function CreateQuoteForm() {
 		});
 	}
 
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	function onError(error: any) {
+		console.error(error);
+		toast.error("Please fill in all required fields.");
+	}
+
 	const companyFieldRef = useRef<HTMLButtonElement>(null);
 	const installmentsFieldRef = useRef<HTMLButtonElement>(null);
 	const languageFieldRef = useRef<HTMLButtonElement>(null);
@@ -114,7 +120,7 @@ export function CreateQuoteForm() {
 	const thirdPartyFullAmountFieldRef = useRef<HTMLInputElement>(null);
 	const thirdPartyDownPaymentFieldRef = useRef<HTMLInputElement>(null);
 	const thirdPartyInstallmentsFieldRef = useRef<HTMLInputElement>(null);
-
+	const feeAmountFieldRef = useRef<HTMLInputElement>(null);
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const errors = form.formState.errors;
@@ -137,6 +143,8 @@ export function CreateQuoteForm() {
 				thirdPartyDownPaymentFieldRef.current?.focus();
 			} else if (errors?.third_party_coverage?.installments) {
 				thirdPartyInstallmentsFieldRef.current?.focus();
+			} else if (errors?.fee_amount) {
+				feeAmountFieldRef.current?.focus();
 			}
 		}
 	}, [form.formState.errors, form.formState.submitCount]);
@@ -159,7 +167,10 @@ export function CreateQuoteForm() {
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+			<form
+				onSubmit={form.handleSubmit(onSubmit, onError)}
+				className="space-y-6"
+			>
 				<Card>
 					<CardHeader>
 						<CardTitle>Quote Details</CardTitle>
@@ -303,6 +314,7 @@ export function CreateQuoteForm() {
 											Select if you want to include complete coverage in the
 											quote.
 										</FormDescription>
+										<FormMessage />
 									</div>
 									<FormControl>
 										<Switch
@@ -400,6 +412,7 @@ export function CreateQuoteForm() {
 											Select if you want to include third party coverage in the
 											quote.
 										</FormDescription>
+										<FormMessage />
 									</div>
 									<FormControl>
 										<Switch
@@ -476,6 +489,79 @@ export function CreateQuoteForm() {
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
 												ref={thirdPartyInstallmentsFieldRef}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<FormField
+							control={form.control}
+							name="has_renters"
+							render={({ field }) => (
+								<FormItem className="flex items-center justify-between rounded-lg">
+									<div className="space-y-0.5">
+										<FormLabel>Has renters?</FormLabel>
+										<FormDescription>
+											Select if the property has renters.
+										</FormDescription>
+										<FormMessage />
+									</div>
+									<FormControl>
+										<Switch
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+
+						<Separator />
+
+						<FormField
+							control={form.control}
+							name="is_car_financed"
+							render={({ field }) => (
+								<FormItem className="flex items-center justify-between rounded-lg">
+									<div className="space-y-0.5">
+										<FormLabel>Is car financed?</FormLabel>
+										<FormDescription>
+											Select if the car is financed.
+										</FormDescription>
+										<FormMessage />
+									</div>
+									<FormControl>
+										<Switch
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+						<Separator />
+
+						<div className="grid grid-cols-2 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="fee_amount"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Fee amount</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												prefix="$"
+												id="fee_amount"
+												name="fee_amount"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+												ref={feeAmountFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />

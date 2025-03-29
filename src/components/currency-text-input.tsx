@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import type React from "react";
 import CurrencyInput, {
 	type CurrencyInputProps,
 } from "react-currency-input-field";
