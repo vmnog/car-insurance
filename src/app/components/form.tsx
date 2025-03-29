@@ -25,13 +25,13 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { CurrencyTextInput } from "@/components/currency-text-input";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { QuoteImageGenerator } from "@/components/quote-image-generator";
 import { FormSchema } from "@/app/components/form-schema";
-import { RefreshCwIcon, SendIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { SendIcon } from "lucide-react";
+
 export function CreateQuoteForm() {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
@@ -56,84 +56,9 @@ export function CreateQuoteForm() {
 
 	useEffect(() => {
 		if (Object.keys(form.formState.errors).length > 0) {
-			if (form.formState.errors.installments) {
-				installmentsFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.term_duration_in_months) {
-				termDurationInMonthsFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.fee_amount) {
-				feeAmountFieldRef.current?.focus();
-				return;
-			}
-
-			if (form.formState.errors.company) {
-				companyFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.language) {
-				languageFieldRef.current?.focus();
-				return;
-			}
-
-			if (form.formState.errors.complete?.full_amount) {
-				completeFullAmountFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.complete?.down_payment) {
-				completeDownPaymentFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.complete?.installments) {
-				completeInstallmentsFieldRef.current?.focus();
-				return;
-			}
-
-			if (form.formState.errors.third_party_coverage?.full_amount) {
-				thirdPartyFullAmountFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.third_party_coverage?.down_payment) {
-				thirdPartyDownPaymentFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.third_party_coverage?.installments) {
-				thirdPartyInstallmentsFieldRef.current?.focus();
-				return;
-			}
-
-			if (form.formState.errors.franchise_amount) {
-				franchiseAmountFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.medical_insurance_amount) {
-				medicalInsuranceAmountFieldRef.current?.focus();
-				return;
-			}
-			if (form.formState.errors.property_damage_insurance_amount) {
-				propertyDamageInsuranceAmountFieldRef.current?.focus();
-				return;
-			}
+			console.error("Form errors:", form.formState.errors);
 		}
 	}, [form.formState.errors]);
-
-	// Custom Fields Refs for focusing on errors
-	const companyFieldRef = useRef<HTMLButtonElement>(null);
-	const installmentsFieldRef = useRef<HTMLButtonElement>(null);
-	const termDurationInMonthsFieldRef = useRef<HTMLButtonElement>(null);
-	const languageFieldRef = useRef<HTMLButtonElement>(null);
-	const completeFullAmountFieldRef = useRef<HTMLInputElement>(null);
-	const completeDownPaymentFieldRef = useRef<HTMLInputElement>(null);
-	const completeInstallmentsFieldRef = useRef<HTMLInputElement>(null);
-	const thirdPartyFullAmountFieldRef = useRef<HTMLInputElement>(null);
-	const thirdPartyDownPaymentFieldRef = useRef<HTMLInputElement>(null);
-	const thirdPartyInstallmentsFieldRef = useRef<HTMLInputElement>(null);
-	const feeAmountFieldRef = useRef<HTMLInputElement>(null);
-	const franchiseAmountFieldRef = useRef<HTMLButtonElement>(null);
-	const medicalInsuranceAmountFieldRef = useRef<HTMLButtonElement>(null);
-	const propertyDamageInsuranceAmountFieldRef = useRef<HTMLButtonElement>(null);
 
 	// Callback function when the image generation is successful
 	const handleSuccessfulQuoteGeneration = (
@@ -208,19 +133,19 @@ export function CreateQuoteForm() {
 									name="installments"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={installmentsFieldRef}
-												label="Installments"
-												subjectName="installments"
-												options={[
-													{ value: "3", label: "3" },
-													{ value: "6", label: "6" },
-													{ value: "9", label: "9" },
-													{ value: "12", label: "12" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Installments"
+													subjectName="installments"
+													options={[
+														{ value: "3", label: "3" },
+														{ value: "6", label: "6" },
+														{ value: "9", label: "9" },
+														{ value: "12", label: "12" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the number of installments.
 											</FormDescription>
@@ -234,17 +159,17 @@ export function CreateQuoteForm() {
 									name="term_duration_in_months"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={termDurationInMonthsFieldRef}
-												label="Term duration in months"
-												subjectName="duration"
-												options={[
-													{ value: "6", label: "6" },
-													{ value: "12", label: "12" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Term duration in months"
+													subjectName="duration"
+													options={[
+														{ value: "6", label: "6" },
+														{ value: "12", label: "12" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Inform the term duration in months.
 											</FormDescription>
@@ -264,11 +189,9 @@ export function CreateQuoteForm() {
 													isInvalid={!!form.formState.errors.fee_amount}
 													prefix="$"
 													id="fee_amount"
-													name="fee_amount"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={feeAmountFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormDescription>Enter the fee amount.</FormDescription>
@@ -286,21 +209,21 @@ export function CreateQuoteForm() {
 									name="company"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={companyFieldRef}
-												label="Company"
-												subjectName="company"
-												options={[
-													{ value: "id-1", label: "Bristol West" },
-													{ value: "id-2", label: "National General" },
-													{ value: "id-3", label: "Progressive" },
-													{ value: "id-4", label: "State Farm" },
-													{ value: "id-5", label: "Travelers" },
-													{ value: "id-6", label: "USAA" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Company"
+													subjectName="company"
+													options={[
+														{ value: "id-1", label: "Bristol West" },
+														{ value: "id-2", label: "National General" },
+														{ value: "id-3", label: "Progressive" },
+														{ value: "id-4", label: "State Farm" },
+														{ value: "id-5", label: "Travelers" },
+														{ value: "id-6", label: "USAA" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the insurance company.
 											</FormDescription>
@@ -313,30 +236,30 @@ export function CreateQuoteForm() {
 									name="language"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={languageFieldRef}
-												label="Language"
-												subjectName="language"
-												options={[
-													{
-														value: "id-1",
-														label: "English",
-														flagCountryCode: "US",
-													},
-													{
-														value: "id-2",
-														label: "Spanish",
-														flagCountryCode: "ES",
-													},
-													{
-														value: "id-3",
-														label: "Portuguese",
-														flagCountryCode: "BR",
-													},
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Language"
+													subjectName="language"
+													options={[
+														{
+															value: "id-1",
+															label: "English",
+															flagCountryCode: "US",
+														},
+														{
+															value: "id-2",
+															label: "Spanish",
+															flagCountryCode: "ES",
+														},
+														{
+															value: "id-3",
+															label: "Portuguese",
+															flagCountryCode: "BR",
+														},
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the language for the quote.
 											</FormDescription>
@@ -395,12 +318,9 @@ export function CreateQuoteForm() {
 													}
 													disabled={!form.watch("complete.is_active")}
 													prefix="$"
-													id="complete_full_amount"
-													name="complete.full_amount"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={completeFullAmountFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -420,12 +340,9 @@ export function CreateQuoteForm() {
 													}
 													disabled={!form.watch("complete.is_active")}
 													prefix="$"
-													id="complete_down_payment"
-													name="complete.down_payment"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={completeDownPaymentFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -445,12 +362,9 @@ export function CreateQuoteForm() {
 													}
 													disabled={!form.watch("complete.is_active")}
 													prefix="$"
-													id="complete_installments"
-													name="complete.installments"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={completeInstallmentsFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -511,12 +425,9 @@ export function CreateQuoteForm() {
 														!form.watch("third_party_coverage.is_active")
 													}
 													prefix="$"
-													id="third_party_full_amount"
-													name="third_party_coverage.full_amount"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={thirdPartyFullAmountFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -539,12 +450,9 @@ export function CreateQuoteForm() {
 														!form.watch("third_party_coverage.is_active")
 													}
 													prefix="$"
-													id="third_party_down_payment"
-													name="third_party_coverage.down_payment"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={thirdPartyDownPaymentFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -567,12 +475,9 @@ export function CreateQuoteForm() {
 														!form.watch("third_party_coverage.is_active")
 													}
 													prefix="$"
-													id="third_party_installments"
-													name="third_party_coverage.installments"
 													placeholder="$1,234"
-													value={field.value}
 													onValueChange={(value) => field.onChange(value)}
-													ref={thirdPartyInstallmentsFieldRef}
+													{...field}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -659,18 +564,18 @@ export function CreateQuoteForm() {
 									name="franchise_amount"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={franchiseAmountFieldRef}
-												label="Franchise"
-												subjectName="franchise"
-												options={[
-													{ value: "id-1", label: "$ 2.500" },
-													{ value: "id-2", label: "$ 5.000" },
-													{ value: "id-3", label: "$ 10.000" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Franchise"
+													subjectName="franchise"
+													options={[
+														{ value: "id-1", label: "$ 2.500" },
+														{ value: "id-2", label: "$ 5.000" },
+														{ value: "id-3", label: "$ 10.000" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the franchise amount.
 											</FormDescription>
@@ -683,18 +588,18 @@ export function CreateQuoteForm() {
 									name="medical_insurance_amount"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={medicalInsuranceAmountFieldRef}
-												label="Medical insurance"
-												subjectName="medical insurance"
-												options={[
-													{ value: "id-1", label: "$ 2.500" },
-													{ value: "id-2", label: "$ 5.000" },
-													{ value: "id-3", label: "$ 10.000" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Medical insurance"
+													subjectName="medical insurance"
+													options={[
+														{ value: "id-1", label: "$ 2.500" },
+														{ value: "id-2", label: "$ 5.000" },
+														{ value: "id-3", label: "$ 10.000" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the medical insurance amount.
 											</FormDescription>
@@ -707,18 +612,18 @@ export function CreateQuoteForm() {
 									name="property_damage_insurance_amount"
 									render={({ field }) => (
 										<FormItem>
-											<SelectWithSearchAndButton
-												value={field.value}
-												ref={propertyDamageInsuranceAmountFieldRef}
-												label="Property damage"
-												subjectName="property damage"
-												options={[
-													{ value: "id-1", label: "$ 2.500" },
-													{ value: "id-2", label: "$ 5.000" },
-													{ value: "id-3", label: "$ 10.000" },
-												]}
-												onFieldChange={field.onChange}
-											/>
+											<FormControl>
+												<SelectWithSearchAndButton
+													label="Property damage"
+													subjectName="property damage"
+													options={[
+														{ value: "id-1", label: "$ 2.500" },
+														{ value: "id-2", label: "$ 5.000" },
+														{ value: "id-3", label: "$ 10.000" },
+													]}
+													{...field}
+												/>
+											</FormControl>
 											<FormDescription>
 												Select the property damage amount.
 											</FormDescription>
