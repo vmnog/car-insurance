@@ -24,6 +24,7 @@ import { FormControl } from "./ui/form";
 import ReactCountryFlag from "react-country-flag";
 interface SelectWithSearchAndButtonProps {
 	label: string;
+	defaultValue: string;
 	options: { value: string; label: string; flagCountryCode?: string }[];
 	subjectName: string;
 	onFieldChange: (value: string) => void;
@@ -31,6 +32,7 @@ interface SelectWithSearchAndButtonProps {
 }
 
 export function SelectWithSearchAndButton({
+	defaultValue,
 	label = "Select an item",
 	options = [],
 	subjectName = "Item",
@@ -39,7 +41,7 @@ export function SelectWithSearchAndButton({
 }: SelectWithSearchAndButtonProps) {
 	const id = useId();
 	const [open, setOpen] = useState<boolean>(false);
-	const [value, setValue] = useState<string>("originui");
+	const [value, setValue] = useState<string>(defaultValue);
 
 	return (
 		<div className="*:not-first:mt-2">

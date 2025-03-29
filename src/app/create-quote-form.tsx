@@ -86,13 +86,22 @@ const FormSchema = z.object({
 	franchise_amount: z.string(),
 	medical_insurance_amount: z.string(),
 	property_damage_insurance_amount: z.string(),
-	is_rental_car: z.boolean(),
+	is_rental_car: z.boolean().default(false),
 	term_duration_in_months: z.string(),
 });
 
 export function CreateQuoteForm() {
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			installments: "3",
+			term_duration_in_months: "6",
+			company: "id-1",
+			language: "id-1",
+			franchise_amount: "id-1",
+			medical_insurance_amount: "id-1",
+			property_damage_insurance_amount: "id-1",
+		},
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -225,13 +234,68 @@ export function CreateQuoteForm() {
 
 						<Separator />
 
-						<div className="grid grid-cols-3 gap-4 items-start">
+						<div className="grid grid-cols-2 gap-4 items-start">
+							<FormField
+								control={form.control}
+								name="installments"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											defaultValue={field.value}
+											ref={installmentsFieldRef}
+											label="Installments"
+											subjectName="installments"
+											options={[
+												{ value: "3", label: "3" },
+												{ value: "6", label: "6" },
+												{ value: "9", label: "9" },
+												{ value: "12", label: "12" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the number of installments.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="term_duration_in_months"
+								render={({ field }) => (
+									<FormItem>
+										<SelectWithSearchAndButton
+											defaultValue={field.value}
+											ref={installmentsFieldRef}
+											label="Term duration in months"
+											subjectName="term_duration_in_months"
+											options={[
+												{ value: "6", label: "6" },
+												{ value: "12", label: "12" },
+											]}
+											onFieldChange={field.onChange}
+										/>
+										<FormDescription>
+											Select the number of installments.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</div>
+
+						<Separator />
+
+						<div className="grid grid-cols-2 gap-4 items-start">
 							<FormField
 								control={form.control}
 								name="company"
 								render={({ field }) => (
 									<FormItem>
 										<SelectWithSearchAndButton
+											defaultValue={field.value}
 											ref={companyFieldRef}
 											label="Company"
 											subjectName="company"
@@ -254,32 +318,11 @@ export function CreateQuoteForm() {
 							/>
 							<FormField
 								control={form.control}
-								name="installments"
-								render={({ field }) => (
-									<FormItem>
-										<SelectWithSearchAndButton
-											ref={installmentsFieldRef}
-											label="Installments"
-											subjectName="installments"
-											options={[
-												{ value: "6", label: "6" },
-												{ value: "12", label: "12" },
-											]}
-											onFieldChange={field.onChange}
-										/>
-										<FormDescription>
-											Select the number of installments.
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
 								name="language"
 								render={({ field }) => (
 									<FormItem>
 										<SelectWithSearchAndButton
+											defaultValue={field.value}
 											ref={languageFieldRef}
 											label="Language"
 											subjectName="language"
@@ -509,7 +552,7 @@ export function CreateQuoteForm() {
 
 						<Separator />
 
-						<div className="flex items-center justify-between gap-4">
+						<div className="grid grid-cols-3 gap-4 items-start">
 							<FormField
 								control={form.control}
 								name="has_renters"
@@ -517,9 +560,7 @@ export function CreateQuoteForm() {
 									<FormItem className="flex items-center justify-between rounded-lg">
 										<div className="space-y-0.5">
 											<FormLabel>Has renters?</FormLabel>
-											<FormDescription>
-												Select if the property has renters.
-											</FormDescription>
+											<FormDescription>Select if has renters.</FormDescription>
 											<FormMessage />
 										</div>
 										<FormControl>
@@ -541,6 +582,28 @@ export function CreateQuoteForm() {
 											<FormLabel>Is car financed?</FormLabel>
 											<FormDescription>
 												Select if the car is financed.
+											</FormDescription>
+											<FormMessage />
+										</div>
+										<FormControl>
+											<Switch
+												checked={field.value}
+												onCheckedChange={field.onChange}
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="is_rental_car"
+								render={({ field }) => (
+									<FormItem className="flex items-center justify-between rounded-lg">
+										<div className="space-y-0.5">
+											<FormLabel>Is rental car?</FormLabel>
+											<FormDescription>
+												Select if the car is a rental car.
 											</FormDescription>
 											<FormMessage />
 										</div>
@@ -591,6 +654,7 @@ export function CreateQuoteForm() {
 								render={({ field }) => (
 									<FormItem>
 										<SelectWithSearchAndButton
+											defaultValue={field.value}
 											ref={franchiseAmountFieldRef}
 											label="Franchise"
 											subjectName="franchise"
@@ -614,6 +678,7 @@ export function CreateQuoteForm() {
 								render={({ field }) => (
 									<FormItem>
 										<SelectWithSearchAndButton
+											defaultValue={field.value}
 											ref={medicalInsuranceAmountFieldRef}
 											label="Medical insurance"
 											subjectName="medical insurance"
@@ -637,6 +702,7 @@ export function CreateQuoteForm() {
 								render={({ field }) => (
 									<FormItem>
 										<SelectWithSearchAndButton
+											defaultValue={field.value}
 											ref={propertyDamageInsuranceAmountFieldRef}
 											label="Property damage"
 											subjectName="property damage"
