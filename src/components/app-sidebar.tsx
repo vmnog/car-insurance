@@ -1,13 +1,10 @@
 "use client";
 
 import {
-	AudioWaveform,
 	BookOpen,
 	Bot,
 	CarFrontIcon,
-	Command,
 	Frame,
-	GalleryVerticalEnd,
 	Map as MapIcon,
 	PieChart,
 	Settings2,
@@ -25,17 +22,14 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar";
+import { Skeleton } from "./ui/skeleton";
+import { Suspense } from "react";
 
 // This is sample data.
-const data = {
-	user: {
-		name: "Victor Nogueira",
-		email: "victor@nogueira.com",
-		avatar: "https://avatars.githubusercontent.com/u/43258815?v=4",
-	},
+const mockData = {
 	teams: [
 		{
-			name: "Liberty Seguros",
+			name: "Acme Inc.",
 			logo: CarFrontIcon,
 			plan: "Enterprise",
 		},
@@ -146,19 +140,20 @@ const data = {
 	],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+	children,
+	...props
+}: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarHeader>
-				<TeamSwitcher teams={data.teams} />
+				<TeamSwitcher teams={mockData.teams} />
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
-				<NavProjects projects={data.projects} />
+				<NavMain items={mockData.navMain} />
+				<NavProjects projects={mockData.projects} />
 			</SidebarContent>
-			<SidebarFooter>
-				<NavUser user={data.user} />
-			</SidebarFooter>
+			<SidebarFooter>{children}</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
 	);

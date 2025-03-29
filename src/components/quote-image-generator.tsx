@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type { z } from "zod";
 
 // Import the FormSchema type from the types file
-import type { FormSchema } from "@/app/components/form-schema";
+import type { FormSchema } from "@/app/(private)/components/form-schema";
 
 // Define a type for our form data using the zod schema
 type QuoteFormData = z.infer<typeof FormSchema>;

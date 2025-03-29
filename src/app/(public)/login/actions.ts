@@ -20,32 +20,19 @@ export async function login(formData: FormData) {
 
 	if (error) {
 		console.error(error);
-		redirect("/error");
 	}
 
   revalidatePath('/', 'layout')
-  redirect('/account')
+  redirect('/')
 }
 
-export async function signup(formData: FormData) {
-	console.log("signup");
-
+export async function logout() {
 	const supabase = await createClient();
-
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
-
-  const { error } = await supabase.auth.signUp(data)
+	const { error } = await supabase.auth.signOut();
 
 	if (error) {
 		console.error(error);
-		redirect("/error");
 	}
 
-  revalidatePath('/', 'layout')
-  redirect('/account')
+	redirect("/login");
 }

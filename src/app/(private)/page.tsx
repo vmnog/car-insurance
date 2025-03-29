@@ -1,5 +1,5 @@
 import { CreateQuoteForm } from "./components/form";
-import { QuoteTable } from "./quote-table";
+import { QuoteTable } from "./components/quote-table";
 import { createClient } from "@/supabase/server";
 
 export default async function Page() {
