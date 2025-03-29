@@ -40,7 +40,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} antialiased @container`}
 			>
 				<SidebarProvider>
 					<AppSidebar />
@@ -62,7 +62,9 @@ export default function RootLayout({
 								</Breadcrumb>
 							</div>
 						</header>
-						<div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+						<div className="mx-auto w-full @8xl:max-w-8xl sm:px-6 lg:px-8">
+							{children}
+						</div>
 					</SidebarInset>
 				</SidebarProvider>
 				<Toaster />

@@ -1,9 +1,9 @@
-import { CreateQuoteForm } from "./create-quote-form";
+import { CreateQuoteForm } from "./components/form";
 import { QuoteTable } from "./quote-table";
 
 export default function Page() {
 	return (
-		<div className="flex flex-col gap-8">
+		<div className="grid grid-cols-2 gap-4">
 			<CreateQuoteForm />
 			<QuoteTable />
 		</div>

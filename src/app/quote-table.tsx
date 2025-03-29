@@ -56,41 +56,43 @@ const items = [
 
 export function QuoteTable() {
 	return (
-		<div>
-			<Table>
+		<div className="overflow-x-auto">
+			<Table className="w-full table-fixed">
 				<TableHeader>
 					<TableRow className="hover:bg-transparent">
-						<TableHead>Name</TableHead>
-						<TableHead>Email</TableHead>
-						<TableHead>Location</TableHead>
-						<TableHead>Status</TableHead>
-						<TableHead className="text-right">Balance</TableHead>
+						<TableHead className="w-1/3">Name</TableHead>
+						<TableHead className="w-1/5">Email</TableHead>
+						<TableHead className="w-1/6">Location</TableHead>
+						<TableHead className="w-1/12">Status</TableHead>
+						<TableHead className="w-1/8 text-right">Balance</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
 					{items.map((item) => (
 						<TableRow key={item.id}>
-							<TableCell>
+							<TableCell className="truncate">
 								<div className="flex items-center gap-3">
 									<img
-										className="rounded-full"
+										className="rounded-full shrink-0"
 										src={item.image}
 										width={40}
 										height={40}
 										alt={item.name}
 									/>
-									<div>
-										<div className="font-medium">{item.name}</div>
-										<span className="text-muted-foreground mt-0.5 text-xs">
+									<div className="min-w-0">
+										<div className="font-medium truncate">{item.name}</div>
+										<span className="text-muted-foreground mt-0.5 text-xs block truncate">
 											{item.username}
 										</span>
 									</div>
 								</div>
 							</TableCell>
-							<TableCell>{item.email}</TableCell>
-							<TableCell>{item.location}</TableCell>
-							<TableCell>{item.status}</TableCell>
-							<TableCell className="text-right">{item.balance}</TableCell>
+							<TableCell className="truncate">{item.email}</TableCell>
+							<TableCell className="truncate">{item.location}</TableCell>
+							<TableCell className="truncate">{item.status}</TableCell>
+							<TableCell className="text-right truncate">
+								{item.balance}
+							</TableCell>
 						</TableRow>
 					))}
 				</TableBody>

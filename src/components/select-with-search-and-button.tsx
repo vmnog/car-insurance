@@ -24,24 +24,24 @@ import { FormControl } from "./ui/form";
 import ReactCountryFlag from "react-country-flag";
 interface SelectWithSearchAndButtonProps {
 	label: string;
-	defaultValue: string;
 	options: { value: string; label: string; flagCountryCode?: string }[];
 	subjectName: string;
 	onFieldChange: (value: string) => void;
 	ref?: React.RefObject<HTMLButtonElement | null>;
+	value: string;
 }
 
 export function SelectWithSearchAndButton({
-	defaultValue,
 	label = "Select an item",
 	options = [],
 	subjectName = "Item",
 	onFieldChange,
 	ref,
+	value: inheritedValue,
 }: SelectWithSearchAndButtonProps) {
 	const id = useId();
 	const [open, setOpen] = useState<boolean>(false);
-	const [value, setValue] = useState<string>(defaultValue);
+	const [value, setValue] = useState<string>(inheritedValue);
 
 	return (
 		<div className="*:not-first:mt-2">
@@ -74,7 +74,7 @@ export function SelectWithSearchAndButton({
 								<span>
 									{value
 										? options.find((option) => option.value === value)?.label
-										: `Select ${subjectName}`}
+										: `Select ${subjectName || ""}`}
 								</span>
 							</span>
 							<ChevronDownIcon
