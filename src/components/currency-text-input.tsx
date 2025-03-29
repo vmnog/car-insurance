@@ -18,6 +18,7 @@ interface CurrencyTextInputProps {
 	value?: string | number;
 	disabled?: boolean;
 	onValueChange?: CurrencyInputProps["onValueChange"];
+	ref?: React.RefObject<HTMLInputElement | null>;
 }
 
 export const CurrencyTextInput = ({
@@ -32,6 +33,7 @@ export const CurrencyTextInput = ({
 	value,
 	disabled,
 	onValueChange,
+	ref,
 }: CurrencyTextInputProps) => {
 	return (
 		<CurrencyInput
@@ -52,6 +54,7 @@ export const CurrencyTextInput = ({
 			value={value}
 			disabled={disabled}
 			onValueChange={onValueChange}
+			ref={ref}
 		/>
 	);
 };

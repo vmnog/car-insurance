@@ -28,6 +28,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { CurrencyTextInput } from "@/components/currency-text-input";
 import { useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 const completeRequiredFormSchema = z.object({
 	is_active: z.literal(true),
@@ -107,6 +108,12 @@ export function CreateQuoteForm() {
 	const companyFieldRef = useRef<HTMLButtonElement>(null);
 	const installmentsFieldRef = useRef<HTMLButtonElement>(null);
 	const languageFieldRef = useRef<HTMLButtonElement>(null);
+	const completeFullAmountFieldRef = useRef<HTMLInputElement>(null);
+	const completeDownPaymentFieldRef = useRef<HTMLInputElement>(null);
+	const completeInstallmentsFieldRef = useRef<HTMLInputElement>(null);
+	const thirdPartyFullAmountFieldRef = useRef<HTMLInputElement>(null);
+	const thirdPartyDownPaymentFieldRef = useRef<HTMLInputElement>(null);
+	const thirdPartyInstallmentsFieldRef = useRef<HTMLInputElement>(null);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -118,6 +125,18 @@ export function CreateQuoteForm() {
 				installmentsFieldRef.current?.focus();
 			} else if (errors.language) {
 				languageFieldRef.current?.focus();
+			} else if (errors?.complete?.full_amount) {
+				completeFullAmountFieldRef.current?.focus();
+			} else if (errors?.complete?.down_payment) {
+				completeDownPaymentFieldRef.current?.focus();
+			} else if (errors?.complete?.installments) {
+				completeInstallmentsFieldRef.current?.focus();
+			} else if (errors?.third_party_coverage?.full_amount) {
+				thirdPartyFullAmountFieldRef.current?.focus();
+			} else if (errors?.third_party_coverage?.down_payment) {
+				thirdPartyDownPaymentFieldRef.current?.focus();
+			} else if (errors?.third_party_coverage?.installments) {
+				thirdPartyInstallmentsFieldRef.current?.focus();
 			}
 		}
 	}, [form.formState.errors, form.formState.submitCount]);
@@ -294,12 +313,17 @@ export function CreateQuoteForm() {
 								</FormItem>
 							)}
 						/>
-						<div className="grid grid-cols-3 gap-4 items-start">
+						<div
+							className={cn(
+								"grid grid-cols-3 gap-4 items-start",
+								!form.watch("complete.is_active") && "hidden",
+							)}
+						>
 							<FormField
 								control={form.control}
 								name="complete.full_amount"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Complete full amount</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -310,6 +334,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={completeFullAmountFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -320,7 +345,7 @@ export function CreateQuoteForm() {
 								control={form.control}
 								name="complete.down_payment"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Complete down payment</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -331,6 +356,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={completeDownPaymentFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -341,7 +367,7 @@ export function CreateQuoteForm() {
 								control={form.control}
 								name="complete.installments"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Complete installments</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -352,6 +378,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={completeInstallmentsFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -383,12 +410,17 @@ export function CreateQuoteForm() {
 								</FormItem>
 							)}
 						/>
-						<div className="grid grid-cols-3 gap-4 items-start">
+						<div
+							className={cn(
+								"grid grid-cols-3 gap-4 items-start",
+								!form.watch("third_party_coverage.is_active") && "hidden",
+							)}
+						>
 							<FormField
 								control={form.control}
 								name="third_party_coverage.full_amount"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Third party full amount</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -399,6 +431,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={thirdPartyFullAmountFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -409,7 +442,7 @@ export function CreateQuoteForm() {
 								control={form.control}
 								name="third_party_coverage.down_payment"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Third party down payment</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -420,6 +453,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={thirdPartyDownPaymentFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -430,7 +464,7 @@ export function CreateQuoteForm() {
 								control={form.control}
 								name="third_party_coverage.installments"
 								render={({ field }) => (
-									<FormItem className="disabled:opacity-50">
+									<FormItem>
 										<FormLabel>Third party installments</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
@@ -441,6 +475,7 @@ export function CreateQuoteForm() {
 												placeholder="$1,234"
 												value={field.value}
 												onValueChange={(value) => field.onChange(value)}
+												ref={thirdPartyInstallmentsFieldRef}
 											/>
 										</FormControl>
 										<FormMessage />
