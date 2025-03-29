@@ -204,7 +204,7 @@ export function CreateQuoteForm() {
 								name="fullname"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Fullname</FormLabel>
+										<FormLabel>Person name</FormLabel>
 										<FormControl>
 											<Input placeholder="John Doe" {...field} />
 										</FormControl>
@@ -221,11 +221,11 @@ export function CreateQuoteForm() {
 								name="quote"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Quote</FormLabel>
+										<FormLabel>Quote title</FormLabel>
 										<FormControl>
-											<Input placeholder="e.g. Auto Insurance" {...field} />
+											<Input placeholder="Auto Insurance" {...field} />
 										</FormControl>
-										<FormDescription>Enter the quote number.</FormDescription>
+										<FormDescription>Enter the quote title.</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}
@@ -234,7 +234,7 @@ export function CreateQuoteForm() {
 
 						<Separator />
 
-						<div className="grid grid-cols-2 gap-4 items-start">
+						<div className="grid grid-cols-3 gap-4 items-start">
 							<FormField
 								control={form.control}
 								name="installments"
@@ -278,8 +278,31 @@ export function CreateQuoteForm() {
 											onFieldChange={field.onChange}
 										/>
 										<FormDescription>
-											Select the number of installments.
+											Inform the term duration in months.
 										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+
+							<FormField
+								control={form.control}
+								name="fee_amount"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Fee</FormLabel>
+										<FormControl>
+											<CurrencyTextInput
+												prefix="$"
+												id="fee_amount"
+												name="fee_amount"
+												placeholder="$1,234"
+												value={field.value}
+												onValueChange={(value) => field.onChange(value)}
+												ref={feeAmountFieldRef}
+											/>
+										</FormControl>
+										<FormDescription>Enter the fee amount.</FormDescription>
 										<FormMessage />
 									</FormItem>
 								)}
@@ -389,7 +412,7 @@ export function CreateQuoteForm() {
 								name="complete.full_amount"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Complete full amount</FormLabel>
+										<FormLabel>Full amount</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("complete.is_active")}
@@ -411,7 +434,7 @@ export function CreateQuoteForm() {
 								name="complete.down_payment"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Complete down payment</FormLabel>
+										<FormLabel>Down payment</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("complete.is_active")}
@@ -433,7 +456,7 @@ export function CreateQuoteForm() {
 								name="complete.installments"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Complete installments</FormLabel>
+										<FormLabel>Installments</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("complete.is_active")}
@@ -487,7 +510,7 @@ export function CreateQuoteForm() {
 								name="third_party_coverage.full_amount"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Third party full amount</FormLabel>
+										<FormLabel>Full amount</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("third_party_coverage.is_active")}
@@ -509,7 +532,7 @@ export function CreateQuoteForm() {
 								name="third_party_coverage.down_payment"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Third party down payment</FormLabel>
+										<FormLabel>Down payment</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("third_party_coverage.is_active")}
@@ -531,7 +554,7 @@ export function CreateQuoteForm() {
 								name="third_party_coverage.installments"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>Third party installments</FormLabel>
+										<FormLabel>Installments</FormLabel>
 										<FormControl>
 											<CurrencyTextInput
 												disabled={!form.watch("third_party_coverage.is_active")}
@@ -613,33 +636,6 @@ export function CreateQuoteForm() {
 												onCheckedChange={field.onChange}
 											/>
 										</FormControl>
-									</FormItem>
-								)}
-							/>
-						</div>
-
-						<Separator />
-
-						<div className="grid grid-cols-2 gap-4 items-start">
-							<FormField
-								control={form.control}
-								name="fee_amount"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Fee</FormLabel>
-										<FormControl>
-											<CurrencyTextInput
-												prefix="$"
-												id="fee_amount"
-												name="fee_amount"
-												placeholder="$1,234"
-												value={field.value}
-												onValueChange={(value) => field.onChange(value)}
-												ref={feeAmountFieldRef}
-											/>
-										</FormControl>
-										<FormDescription>Enter the fee amount.</FormDescription>
-										<FormMessage />
 									</FormItem>
 								)}
 							/>
