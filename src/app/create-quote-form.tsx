@@ -125,11 +125,17 @@ export function CreateQuoteForm() {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		form.clearErrors("complete");
+		form.resetField("complete.full_amount");
+		form.resetField("complete.down_payment");
+		form.resetField("complete.installments");
 	}, [form.watch("complete.is_active")]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		form.clearErrors("third_party_coverage");
+		form.resetField("third_party_coverage.full_amount");
+		form.resetField("third_party_coverage.down_payment");
+		form.resetField("third_party_coverage.installments");
 	}, [form.watch("third_party_coverage.is_active")]);
 
 	return (
